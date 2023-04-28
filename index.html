@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Happy Birthday!</title>
+    <link rel="stylesheet" href="flipdown.css">
+    <script src="flipdown.js"></script>
+</head>
+
+<body>
+
+    <div class="container" id="count">
+        <h1 id="head">Countdown to your birthday:</h1>
+        <div id="flipdown" class="flipdown"></div>
+    </div>
+    <canvas id=c></canvas>
+    <canvas id="confetti"></canvas>
+
+    <div id="merrywrap" class="merrywrap">
+        <canvas id="snowfall"></canvas>
+        <div class="giftbox">
+            <div class="cover">
+                <div></div>
+            </div>
+            <div class="box"></div>
+        </div>
+    </div>
+</body>
+<script src="confetti.min.js" charset="utf-8"></script>
+<!-- <script src="inde.js" charset="utf-8"></script> -->
+<script>
+    const count = document.getElementById('count');
+    const head = document.getElementById('head');
+    const giftbox = document.getElementById('merrywrap');
+    const canvasC = document.getElementById('c');
+
+    const config = {
+        name: '\"Ahmer\"'
+    };
+
+    function hideEverything() {
+        // head.style.display = 'none';
+        //   count.style.display = 'none';
+        giftbox.style.display = 'none';
+        canvasC.style.display = 'none';
+    }
+
+    hideEverything();
+
+    const confettiSettings = { target: 'confetti' };
+    const confetti = new window.ConfettiGenerator(confettiSettings);
+    confetti.render();
+
+
+
+    x = setInterval(function () {
+        document.addEventListener('DOMContentLoaded', () => {
+            let timer = 1682714490;
+            let flipdwn = new FlipDown(timer, {
+                theme: "dark",
+            }).start().ifEnded(() => {
+
+
+                head.style.display = 'none';
+                count.style.display = 'none';
+                giftbox.style.display = 'initial';
+                clearInterval(x);
+                let merrywrap = document.getElementById('merrywrap');
+                let box = merrywrap.getElementsByClassName('giftbox')[0];
+                let step = 1;
+                let stepMinutes = [2000, 2000, 1000, 1000];
+
+                function init() {
+                    box.addEventListener('click', openBox, false);
+                    box.addEventListener('click', showfireworks, false);
+                }
+
+                function stepClass(step) {
+                    merrywrap.className = 'merrywrap';
+                    merrywrap.className = 'merrywrap step-' + step;
+                }
+
+                function openBox() {
+                    if (step === 1) {
+                        box.removeEventListener('click', openBox, false);
+                    }
+                    stepClass(step);
+                    if (step === 3) {
+                    }
+                    if (step === 4) {
+                        return;
+                    }
+                    setTimeout(openBox, stepMinutes[step - 1]);
+                    step++;
+                    //   setTimeout(anim, 1900);
+                }
+
+                function showfireworks() {
+                    canvasC.style.display = 'initial';
+                    setTimeout(anim, 1500);
+                }
+
+                init();
+
+
+                let w = (c.width = window.innerWidth),
+                    h = (c.height = window.innerHeight),
+                    ctx = c.getContext('2d'),
+                    hw = w / 2, // half-width
+                    hh = h / 2,
+                    opts = {
+                        strings: ['HAPPY', 'BIRTHDAY!', config.name],
+                        charSize: 80,
+                        charSpacing: 80,
+                        lineHeight: 100,
+
+                        cx: w / 2,
+                        cy: h / 2,
+
+                        fireworkPrevPoints: 10,
+                        fireworkBaseLineWidth: 5,
+                        fireworkAddedLineWidth: 8,
+                        fireworkSpawnTime: 200,
+                        fireworkBaseReachTime: 30,
+                        fireworkAddedReachTime: 30,
+                        fireworkCircleBaseSize: 20,
+                        fireworkCircleAddedSize: 10,
+                        fireworkCircleBaseTime: 30,
+                        fireworkCircleAddedTime: 30,
+                        fireworkCircleFadeBaseTime: 10,
+                        fireworkCircleFadeAddedTime: 5,
+                        fireworkBaseShards: 5,
+                        fireworkAddedShards: 5,
+                        fireworkShardPrevPoints: 3,
+                        fireworkShardBaseVel: 4,
+                        fireworkShardAddedVel: 2,
+                        fireworkShardBaseSize: 3,
+                        fireworkShardAddedSize: 3,
+                        gravity: 0.1,
+                        upFlow: -0.1,
+                        letterContemplatingWaitTime: 360,
+                        balloonSpawnTime: 20,
+                        balloonBaseInflateTime: 10,
+                        balloonAddedInflateTime: 10,
+                        balloonBaseSize: 20,
+                        balloonAddedSize: 20,
+                        balloonBaseVel: 0.4,
+                        balloonAddedVel: 0.4,
+                        balloonBaseRadian: -(Math.PI / 2 - 0.5),
+                        balloonAddedRadian: -1
+                    },
+                    calc = {
+                        totalWidth:
+                            opts.charSpacing *
+                            Math.max(opts.strings[0].length, opts.strings[1].length)
+                    },
+                    Tau = Math.PI * 2,
+                    TauQuarter = Tau / 4,
+                    letters = [];
+
+                ctx.font = opts.charSize + 'px Bitter';
+
+                function Letter(char, x, y) {
+                    this.char = char;
+                    this.x = x;
+                    this.y = y;
+
+                    this.dx = -ctx.measureText(char).width / 2;
+                    this.dy = +opts.charSize / 2;
+
+                    this.fireworkDy = this.y - hh;
+
+                    let hue = (x / calc.totalWidth) * 360;
+
+                    this.color = 'hsl(hue,80%,50%)'.replace('hue', hue);
+                    this.lightAlphaColor = 'hsla(hue,80%,light%,alp)'.replace('hue', hue);
+                    this.lightColor = 'black'.replace('hue', hue);
+                    this.alphaColor = 'hsla(hue,80%,50%,alp)'.replace('hue', hue);
+
+                    this.reset();
+                }
+                Letter.prototype.reset = function () {
+                    this.phase = 'firework';
+                    this.tick = 0;
+                    this.spawned = false;
+                    this.spawningTime = (opts.fireworkSpawnTime * Math.random()) | 0;
+                    this.reachTime =
+                        (opts.fireworkBaseReachTime +
+                            opts.fireworkAddedReachTime * Math.random()) |
+                        0;
+                    this.lineWidth =
+                        opts.fireworkBaseLineWidth + opts.fireworkAddedLineWidth * Math.random();
+                    this.prevPoints = [[0, hh, 0]];
+                };
+                Letter.prototype.step = function () {
+                    if (this.phase === 'firework') {
+                        if (!this.spawned) {
+                            ++this.tick;
+                            if (this.tick >= this.spawningTime) {
+                                this.tick = 0;
+                                this.spawned = true;
+                            }
+                        } else {
+                            ++this.tick;
+
+                            let linearProportion = this.tick / this.reachTime,
+                                armonicProportion = Math.sin(linearProportion * TauQuarter),
+                                x = linearProportion * this.x,
+                                y = hh + armonicProportion * this.fireworkDy;
+
+                            if (this.prevPoints.length > opts.fireworkPrevPoints)
+                                this.prevPoints.shift();
+
+                            this.prevPoints.push([x, y, linearProportion * this.lineWidth]);
+
+                            let lineWidthProportion = 1 / (this.prevPoints.length - 1);
+
+                            for (let i = 1; i < this.prevPoints.length; ++i) {
+                                let point = this.prevPoints[i],
+                                    point2 = this.prevPoints[i - 1];
+
+                                ctx.strokeStyle = this.alphaColor.replace(
+                                    'alp',
+                                    i / this.prevPoints.length
+                                );
+                                ctx.lineWidth = point[2] * lineWidthProportion * i;
+                                ctx.beginPath();
+                                ctx.moveTo(point[0], point[1]);
+                                ctx.lineTo(point2[0], point2[1]);
+                                ctx.stroke();
+                            }
+
+                            if (this.tick >= this.reachTime) {
+                                this.phase = 'contemplate';
+
+                                this.circleFinalSize =
+                                    opts.fireworkCircleBaseSize +
+                                    opts.fireworkCircleAddedSize * Math.random();
+                                this.circleCompleteTime =
+                                    (opts.fireworkCircleBaseTime +
+                                        opts.fireworkCircleAddedTime * Math.random()) |
+                                    0;
+                                this.circleCreating = true;
+                                this.circleFading = false;
+
+                                this.circleFadeTime =
+                                    (opts.fireworkCircleFadeBaseTime +
+                                        opts.fireworkCircleFadeAddedTime * Math.random()) |
+                                    0;
+                                this.tick = 0;
+                                this.tick2 = 0;
+
+                                this.shards = [];
+
+                                let shardCount =
+                                    (opts.fireworkBaseShards +
+                                        opts.fireworkAddedShards * Math.random()) |
+                                    0,
+                                    angle = Tau / shardCount,
+                                    cos = Math.cos(angle),
+                                    sin = Math.sin(angle),
+                                    x = 1,
+                                    y = 0;
+
+                                for (let i = 0; i < shardCount; ++i) {
+                                    let x1 = x;
+                                    x = x * cos - y * sin;
+                                    y = y * cos + x1 * sin;
+
+                                    this.shards.push(new Shard(this.x, this.y, x, y, this.alphaColor));
+                                }
+                            }
+                        }
+                    } else if (this.phase === 'contemplate') {
+                        ++this.tick;
+
+                        if (this.circleCreating) {
+                            ++this.tick2;
+                            let proportion = this.tick2 / this.circleCompleteTime,
+                                armonic = -Math.cos(proportion * Math.PI) / 2 + 0.5;
+
+                            ctx.beginPath();
+                            ctx.fillStyle = this.lightAlphaColor
+                                .replace('light', 50 + 50 * proportion)
+                                .replace('alp', proportion);
+                            ctx.beginPath();
+                            ctx.arc(this.x, this.y, armonic * this.circleFinalSize, 0, Tau);
+                            ctx.fill();
+
+                            if (this.tick2 > this.circleCompleteTime) {
+                                this.tick2 = 0;
+                                this.circleCreating = false;
+                                this.circleFading = true;
+                            }
+                        } else if (this.circleFading) {
+                            ctx.fillStyle = this.lightColor.replace('light', 70);
+                            ctx.fillText(this.char, this.x + this.dx, this.y + this.dy);
+
+                            ++this.tick2;
+                            let proportion = this.tick2 / this.circleFadeTime,
+                                armonic = -Math.cos(proportion * Math.PI) / 2 + 0.5;
+
+                            ctx.beginPath();
+                            ctx.fillStyle = this.lightAlphaColor
+                                .replace('light', 100)
+                                .replace('alp', 1 - armonic);
+                            ctx.arc(this.x, this.y, this.circleFinalSize, 0, Tau);
+                            ctx.fill();
+
+                            if (this.tick2 >= this.circleFadeTime) this.circleFading = false;
+                        } else {
+                            ctx.fillStyle = this.lightColor.replace('light', 70);
+                            ctx.fillText(this.char, this.x + this.dx, this.y + this.dy);
+                        }
+
+                        for (let i = 0; i < this.shards.length; ++i) {
+                            this.shards[i].step();
+
+                            if (!this.shards[i].alive) {
+                                this.shards.splice(i, 1);
+                                --i;
+                            }
+                        }
+
+                        if (this.tick > opts.letterContemplatingWaitTime) {
+                            this.phase = 'balloon';
+
+                            this.tick = 0;
+                            this.spawning = true;
+                            this.spawnTime = (opts.balloonSpawnTime * Math.random()) | 0;
+                            this.inflating = false;
+                            this.inflateTime =
+                                (opts.balloonBaseInflateTime +
+                                    opts.balloonAddedInflateTime * Math.random()) |
+                                0;
+                            this.size =
+                                (opts.balloonBaseSize + opts.balloonAddedSize * Math.random()) | 0;
+
+                            let rad =
+                                opts.balloonBaseRadian + opts.balloonAddedRadian * Math.random(),
+                                vel = opts.balloonBaseVel + opts.balloonAddedVel * Math.random();
+
+                            this.vx = Math.cos(rad) * vel;
+                            this.vy = Math.sin(rad) * vel;
+                        }
+                    } else if (this.phase === 'balloon') {
+                        ctx.strokeStyle = this.lightColor.replace('light', 80);
+
+                        if (this.spawning) {
+                            ++this.tick;
+                            ctx.fillStyle = this.lightColor.replace('light', 70);
+                            ctx.fillText(this.char, this.x + this.dx, this.y + this.dy);
+
+                            if (this.tick >= this.spawnTime) {
+                                this.tick = 0;
+                                this.spawning = false;
+                                this.inflating = true;
+                            }
+                        } else if (this.inflating) {
+                            ++this.tick;
+
+                            let proportion = this.tick / this.inflateTime,
+                                x = (this.cx = this.x),
+                                y = (this.cy = this.y - this.size * proportion);
+
+                            ctx.fillStyle = this.alphaColor.replace('alp', proportion);
+                            ctx.beginPath();
+                            generateBalloonPath(x, y, this.size * proportion);
+                            ctx.fill();
+
+                            ctx.beginPath();
+                            ctx.moveTo(x, y);
+                            ctx.lineTo(x, this.y);
+                            ctx.stroke();
+
+                            ctx.fillStyle = this.lightColor.replace('light', 70);
+                            ctx.fillText(this.char, this.x + this.dx, this.y + this.dy);
+
+                            if (this.tick >= this.inflateTime) {
+                                this.tick = 0;
+                                this.inflating = false;
+                            }
+                        } else {
+                            this.cx += this.vx;
+                            this.cy += this.vy += opts.upFlow;
+
+                            ctx.fillStyle = this.color;
+                            ctx.beginPath();
+                            generateBalloonPath(this.cx, this.cy, this.size);
+                            ctx.fill();
+
+                            ctx.beginPath();
+                            ctx.moveTo(this.cx, this.cy);
+                            ctx.lineTo(this.cx, this.cy + this.size);
+                            ctx.stroke();
+
+                            ctx.fillStyle = this.lightColor.replace('light', 70);
+                            ctx.fillText(
+                                this.char,
+                                this.cx + this.dx,
+                                this.cy + this.dy + this.size
+                            );
+
+                            if (this.cy + this.size < -hh || this.cx < -hw || this.cy > hw)
+                                this.phase = 'done';
+                        }
+                    }
+                };
+
+                function Shard(x, y, vx, vy, color) {
+                    let vel =
+                        opts.fireworkShardBaseVel + opts.fireworkShardAddedVel * Math.random();
+
+                    this.vx = vx * vel;
+                    this.vy = vy * vel;
+
+                    this.x = x;
+                    this.y = y;
+
+                    this.prevPoints = [[x, y]];
+                    this.color = color;
+
+                    this.alive = true;
+
+                    this.size =
+                        opts.fireworkShardBaseSize + opts.fireworkShardAddedSize * Math.random();
+                }
+                Shard.prototype.step = function () {
+                    this.x += this.vx;
+                    this.y += this.vy += opts.gravity;
+
+                    if (this.prevPoints.length > opts.fireworkShardPrevPoints)
+                        this.prevPoints.shift();
+
+                    this.prevPoints.push([this.x, this.y]);
+
+                    let lineWidthProportion = this.size / this.prevPoints.length;
+
+                    for (let k = 0; k < this.prevPoints.length - 1; ++k) {
+                        let point = this.prevPoints[k],
+                            point2 = this.prevPoints[k + 1];
+
+                        ctx.strokeStyle = this.color.replace('alp', k / this.prevPoints.length);
+                        ctx.lineWidth = k * lineWidthProportion;
+                        ctx.beginPath();
+                        ctx.moveTo(point[0], point[1]);
+                        ctx.lineTo(point2[0], point2[1]);
+                        ctx.stroke();
+                    }
+
+                    if (this.prevPoints[0][1] > hh) this.alive = false;
+                };
+
+                function generateBalloonPath(x, y, size) {
+                    ctx.moveTo(x, y);
+                    ctx.bezierCurveTo(
+                        x - size / 2,
+                        y - size / 2,
+                        x - size / 4,
+                        y - size,
+                        x,
+                        y - size
+                    );
+                    ctx.bezierCurveTo(x + size / 4, y - size, x + size / 2, y - size / 2, x, y);
+                }
+
+                function anim() {
+                    window.requestAnimationFrame(anim);
+
+                    ctx.fillStyle = '#fff';
+                    ctx.fillRect(0, 0, w, h);
+
+                    ctx.translate(hw, hh);
+
+                    let done = true;
+                    for (let l = 0; l < letters.length; ++l) {
+                        letters[l].step();
+                        if (letters[l].phase !== 'done') done = false;
+                    }
+
+                    ctx.translate(-hw, -hh);
+
+                    if (done) for (let l = 0; l < letters.length; ++l) letters[l].reset();
+                }
+
+                for (let i = 0; i < opts.strings.length; ++i) {
+                    for (let j = 0; j < opts.strings[i].length; ++j) {
+                        letters.push(
+                            new Letter(
+                                opts.strings[i][j],
+                                j * opts.charSpacing +
+                                opts.charSpacing / 2 -
+                                (opts.strings[i].length * opts.charSize) / 2,
+                                i * opts.lineHeight +
+                                opts.lineHeight / 2 -
+                                (opts.strings.length * opts.lineHeight) / 2
+                            )
+                        );
+                    }
+                }
+
+                window.addEventListener('resize', function () {
+                    w = c.width = window.innerWidth;
+                    h = c.height = window.innerHeight;
+
+                    hw = w / 2;
+                    hh = h / 2;
+
+                    ctx.font = opts.charSize + 'px Verdana';
+                });
+
+
+
+                // if (distance < 0) {
+                //     clearInterval(x);
+                //     console.log("happy birthday");
+                // }
+            }, 1000);
+        })
+    })
+
+</script>
+
+</html>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Bitter:wght@900&display=swap');
+
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+    }
+
+    body {
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+    }
+
+    body {
+        font-family: -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Roboto,
+            Oxygen-Sans,
+            Ubuntu,
+            Cantarell,
+            "Helvetica Neue",
+            sans-serif;
+    }
+
+    .container {
+        margin: 0 auto;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        /* filter: invert(); */
+    }
+
+    body {
+        background: #ffff;
+        /* background:black */
+        overflow: hidden;
+        background-color: #e5e5f7;
+        background-image: radial-gradient(#444cf7 0.5px, transparent 0.5px), radial-gradient(#444cf7 0.5px, #e5e5f7 0.5px);
+        background-size: 20px 20px;
+        background-position: 0 0, 10px 10px;
+    }
+
+    .container {
+        color: rgba(55, 59, 65, 0.8);
+        font-family: Helvetica, sans-serif;
+        font-weight: lighter;
+        text-align: center;
+    }
+
+    h1 {
+        font-weight: normal;
+    }
+
+    li {
+        display: inline-block;
+        font-size: 2em;
+        list-style-type: none;
+        padding: 1em;
+        text-transform: uppercase;
+    }
+
+    li span {
+        display: block;
+        font-size: 4.5rem;
+    }
+
+    .merrywrap {
+        position: absolute;
+        right: 40px;
+        left: 40px;
+        bottom: 80px;
+        top: 40px;
+    }
+
+    .giftbox {
+        position: absolute;
+        width: 300px;
+        height: 200px;
+        left: 50%;
+        margin-left: -150px;
+        bottom: 0;
+        z-index: 10;
+    }
+
+    .giftbox>div {
+        background: #F64747;
+        position: absolute;
+        box-shadow: 5px 10px 18px rgba(0, 0, 0, 0.4);
+    }
+
+    .giftbox>div:after,
+    .giftbox>div:before {
+        position: absolute;
+        content: "";
+        top: 0;
+    }
+
+    .giftbox:after {
+        position: absolute;
+        color: #fff;
+        width: 100%;
+        content: "Click Me!";
+        left: 0;
+        bottom: 0;
+        font-size: 24px;
+        text-align: center;
+        transform: rotate(-20deg);
+        transform-origin: 0 0;
+    }
+
+    .giftbox .cover {
+        width: 100%;
+        top: 0;
+        left: 0;
+        height: 25%;
+        z-index: 2;
+    }
+
+    .giftbox .cover:before {
+        position: absolute;
+        height: 100%;
+        left: 50%;
+        width: 50px;
+        transform: translateX(-50%);
+        background: #2C3E50;
+    }
+
+    .giftbox .cover>div {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        left: 50%;
+        top: -50px;
+        transform: translateX(-50%);
+    }
+
+    .giftbox .cover>div:before,
+    .giftbox .cover>div:after {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        content: "";
+        box-shadow: inset 0 0 0 15px #2C3E50;
+        border-radius: 30px;
+        transform-origin: 50% 100%;
+    }
+
+    .giftbox .cover>div:before {
+        transform: translateX(-45%) skewY(40deg);
+    }
+
+    .giftbox .cover>div:after {
+        transform: translateX(45%) skewY(-40deg);
+    }
+
+    .giftbox .box {
+        right: 5%;
+        left: 5%;
+        height: 80%;
+        bottom: 0;
+    }
+
+    .giftbox .box:before {
+        width: 50px;
+        height: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #2C3E50;
+    }
+
+    .giftbox .box:after {
+        width: 100%;
+        height: 30px;
+        background: rgba(0, 0, 0, 0);
+    }
+
+    .step-1 .giftbox {
+        animation: wobble 0.5s linear infinite forwards;
+    }
+
+    .step-1 .cover {
+        animation: wobble 0.5s linear infinite 5s forwards;
+    }
+
+    .step-1 .icons .row span {
+        opacity: 1;
+    }
+
+    .step-2 .giftbox:after {
+        opacity: 0;
+    }
+
+    .step-3 .giftbox,
+    .step-4 .giftbox {
+        opacity: 0;
+        z-index: 1;
+    }
+
+    .step-3 .giftbox:after,
+    .step-4 .giftbox:after {
+        opacity: 0;
+    }
+
+    .step-2 .giftbox .cover {
+        animation: flyUp 2s ease-in forwards;
+    }
+
+    .step-2 .giftbox .box {
+        animation: flyDown 2s ease-in 0.05s forwards;
+    }
+
+    @keyframes wobble {
+        25% {
+            transform: rotate(4deg);
+        }
+
+        75% {
+            transform: rotate(-2deg);
+        }
+    }
+
+    @keyframes flyUp {
+        75% {
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateY(-1000px) rotate(20deg);
+            opacity: 0;
+        }
+    }
+
+    @keyframes flyDown {
+        75% {
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+    }
+</style>
