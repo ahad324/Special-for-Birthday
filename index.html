@@ -38,7 +38,7 @@
     const canvasC = document.getElementById('c');
 
     const config = {
-        name: 'Ahmar'
+        name: 'Ahad'
     };
 
     function hideEverything() {
@@ -54,13 +54,9 @@
     const confetti = new window.ConfettiGenerator(confettiSettings);
     confetti.render();
 
-    const alert = prompt("Enter the value of Timer!");
-
     x = setInterval(function () {
-        document.addEventListener('DOMContentLoaded', () => {
-            let timer = parseInt(alert);
-            // 1682780400         
-            let flipdwn = new FlipDown(timer, {
+        document.addEventListener('DOMContentLoaded', () => {   
+            let flipdwn = new FlipDown(1687435200, {
                 theme: "light",
             }).start().ifEnded(() => {
 
