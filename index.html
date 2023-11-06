@@ -90,6 +90,8 @@
                 }
 
                 function openBox() {
+                    let audio = new Audio('happy-birthday-funk-spot-16197.mp3');
+                    audio.play();
                     if (step === 1) {
                         box.removeEventListener('click', openBox, false);
                     }
@@ -106,8 +108,6 @@
 
                 function showfireworks() {
                     canvasC.style.display = 'initial';
-                     let audio = new Audio('happy-birthday-funk-spot-16197.mp3');
-                    audio.play();
                     setTimeout(anim, 1500);
                 }
 
