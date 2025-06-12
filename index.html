@@ -51,10 +51,18 @@
     const head = document.getElementById("head");
     const giftbox = document.getElementById("merrywrap");
     const canvasC = document.getElementById("c");
-    giftbox.addEventListener("click", () => {
-      let audio = new Audio("happy-birthday-funk-spot-16197.mp3");
-      audio.play();
+// Define the audio instance and flag outside the event listener
+const audio = new Audio("happy-birthday-funk-spot-16197.mp3");
+let isAudioPlayed = false;
+
+giftbox.addEventListener("click", () => {
+  if (!isAudioPlayed) {
+    audio.play().catch((error) => {
+      console.error("Audio playback failed:", error);
     });
+    isAudioPlayed = true;
+  }
+});
     const config = {
       name: "Moeed",
     };
@@ -74,7 +82,7 @@
 
     x = setInterval(function () {
       document.addEventListener("DOMContentLoaded", () => {
-        let flipdwn = new FlipDown(1757203200, {
+        let flipdwn = new FlipDown(1749719532, {
           theme: "light",
         })
           .start()
